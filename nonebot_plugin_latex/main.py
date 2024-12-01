@@ -30,7 +30,7 @@ from nonebot_plugin_alconna import (
 
 from .data import ConvertLatex, LATEX_PATTERN
 
-command_heads = {
+command_heads = (
     "latex",
     "公式",
     "数学公式",
@@ -39,7 +39,7 @@ command_heads = {
     "latex_math",
     "公式渲染",
     "latex渲染",
-}
+)
 """
 命令头
 """
@@ -91,11 +91,11 @@ async def handle_pic(
     # print("正在解决reply指令……")
     latexes = []
     if event.reply:
-        latexes.extend(LATEX_PATTERN.findall(event.reply.message.extract_plain_text()))
+        latexes.extend(LATEX_PATTERN.finditer(event.reply.message.extract_plain_text()))
 
     # print(arg)
     if event.message:
-        latexes.extend(LATEX_PATTERN.findall(event.message.extract_plain_text()))
+        latexes.extend(LATEX_PATTERN.finditer(event.message.extract_plain_text()))
 
     if not latexes:
         await scan.finish(
@@ -105,7 +105,8 @@ async def handle_pic(
 
     result_msg = UniMessage()
 
-    for tex in latexes:
+    for tex_macher in latexes:
+        tex = tex_macher.group().replace("$", "")
         if (result := await converter.generate_png(tex))[0]:
             result_msg.append(
                 Alconna_Image(raw=result[1], mimetype="image/png", name="latex.png")
