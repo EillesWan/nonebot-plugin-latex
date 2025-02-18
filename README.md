@@ -20,4 +20,4 @@ pip install nonebot-plugin-latex
 enable_as_application = true
 ```
 
-这样就可以使用 `latex` 命令进行渲染了，例如 `latex E=mc^2` 就会返回这个方程式的渲染图片。
+这样就可以使用 `latex` 命令进行渲染了，例如 `latex $E=mc^2$` 就会返回这个方程式的渲染图片。

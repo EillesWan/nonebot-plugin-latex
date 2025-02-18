@@ -51,10 +51,10 @@ async def check_for_scan(
     # state: T_State,
 ) -> bool:
     """
-    检查是否为扫码指令
+    检查是否为 LaTeX 指令
     """
 
-    # print("检查消息满足扫码要求：", event)
+    # print("检查消息满足渲染要求：", event)
     if isinstance(event, MessageEvent):
         # print("此为原始信息：", event.raw_message)
         # event.message
@@ -71,14 +71,14 @@ async def check_for_scan(
         return False
 
 
-scan = nonebot.on_message(
+latexg = nonebot.on_message(
     rule=check_for_scan,
     block=False,
     priority=90,
 )
 
 
-@scan.handle()
+@latexg.handle()
 async def handle_pic(
     event: MessageEvent,
     # state: T_State,
@@ -94,7 +94,7 @@ async def handle_pic(
         latexes.extend(LATEX_PATTERN.finditer(event.message.extract_plain_text()))
 
     if not latexes:
-        await scan.finish(
+        await latexg.finish(
             "同志！以我们目前的实力，暂时无法读取你大脑中的公式，你还是把它通过你的输入设备打出来吧。"
         )
         return

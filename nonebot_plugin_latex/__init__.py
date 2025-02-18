@@ -19,7 +19,7 @@ from nonebot.plugin import PluginMetadata
 from .config import Config
 from .converter import converter
 
-__version__ = "0.0.2"
+__version__ = "0.0.2.1"
 
 __author__ = "Eilles"
 
