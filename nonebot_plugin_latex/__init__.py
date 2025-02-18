@@ -13,11 +13,15 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 """
 
-__version__ = "0.0.1"
+from nonebot import get_plugin_config
+from nonebot.plugin import PluginMetadata
+
+from .config import Config
+from .converter import converter
+
+__version__ = "0.0.2"
 
 __author__ = "Eilles"
-
-from nonebot.plugin import PluginMetadata
 
 __plugin_meta__ = PluginMetadata(
     name="LaTeX图形渲染插件",
@@ -28,4 +32,9 @@ __plugin_meta__ = PluginMetadata(
     extra={"License": "Mulan PSL v2", "Author": __author__},
 )
 
-from .main import *
+
+config = get_plugin_config(Config)
+
+
+if config.enable_as_application:
+    from .main import *

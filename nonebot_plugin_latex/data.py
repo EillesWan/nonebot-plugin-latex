@@ -243,7 +243,7 @@ class JRTChannel(ConvertChannel):
             return 99999
 
 
-channel_list: list[type[ConvertChannel]] = [L2PChannel, CDCChannel, JRTChannel]
+CHANNEL_LIST: list[type[ConvertChannel]] = [L2PChannel, CDCChannel, JRTChannel]
 
 
 class ConvertLatex:
@@ -251,6 +251,14 @@ class ConvertLatex:
     channel: ConvertChannel
 
     def __init__(self, channel: Optional[ConvertChannel] = None) -> None:
+        """
+        LaTeX在线渲染类
+
+        Args:
+            channel (Optional[ConvertChannel], optional):
+                选择何种在线转换通道，若为空，则自动选择延迟最低的通道。默认为空。
+                [WARNING] 请注意！选择通道时采取的是同步函数，因此可能造成阻塞。
+        """
 
         if channel is None:
             self.channel = self.auto_choose_channel()
@@ -294,7 +302,7 @@ class ConvertLatex:
     def auto_choose_channel() -> ConvertChannel:
 
         return min(
-            channel_list,
+            CHANNEL_LIST,
             key=lambda channel: channel.channel_test(),
         )()
 

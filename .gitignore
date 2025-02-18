@@ -138,6 +138,7 @@ ENV/
 env.bak/
 venv.bak/
 .idea
+.conda
 
 # Spyder project settings
 .spyderproject

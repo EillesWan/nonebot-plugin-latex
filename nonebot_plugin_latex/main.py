@@ -1,5 +1,5 @@
 """
-功能集
+命令功能集
 
 
 Copyright (c) 2024 金羿Eilles
@@ -28,7 +28,8 @@ from nonebot_plugin_alconna import (
     UniMessage,
 )
 
-from .data import ConvertLatex, LATEX_PATTERN
+from .data import LATEX_PATTERN
+from .converter import converter
 
 command_heads = (
     "latex",
@@ -42,11 +43,6 @@ command_heads = (
 )
 """
 命令头
-"""
-
-converter = ConvertLatex()
-"""
-Latex 渲染器
 """
 
 
@@ -66,7 +62,7 @@ async def check_for_scan(
             # print("这是其中一个信息---", msg)
             if msg.type == "text" and (msgdata := msg.data["text"].strip()):
                 if msgdata.startswith(command_heads):
-                    
+
                     # print("判断：这确实是指令发出")
                     return True
                 else:
@@ -109,7 +105,7 @@ async def handle_pic(
         tex = tex_macher.group().replace("$", "")
         if (result := await converter.generate_png(tex))[0]:
             result_msg.append(
-                Alconna_Image(raw=result[1], mimetype="image/png", name="latex.png")
+                Alconna_Image(raw=result[1], mimetype="image/png", name="latex.png")  # type: ignore
             )
         else:
             if isinstance(result[1], str):
