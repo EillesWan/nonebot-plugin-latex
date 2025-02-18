@@ -39,7 +39,7 @@ class ConvertChannel:
 
 class L2PChannel(ConvertChannel):
 
-    URL = "https://www.latex2png.com"
+    URL = "http://www.latex2png.com"
 
     async def get_to_convert(
         self,
@@ -93,9 +93,9 @@ class L2PChannel(ConvertChannel):
                 start_time = time.time_ns()
                 latex2png = (
                     client.get(
-                        "https://www.latex2png.com{}"
+                        "http://www.latex2png.com{}"
                         + client.post(
-                            "https://www.latex2png.com/api/convert",
+                            "http://www.latex2png.com/api/convert",
                             json={
                                 "auth": {"user": "guest", "password": "guest"},
                                 "latex": "\\\\int_{a}^{b} x^2 \\\\, dx = \\\\frac{b^3}{3} - \\\\frac{a^3}{5}\n",
@@ -116,7 +116,7 @@ class L2PChannel(ConvertChannel):
 
 class CDCChannel(ConvertChannel):
 
-    URL = "https://latex.codecogs.com"
+    URL = "http://latex.codecogs.com"
 
     async def get_to_convert(
         self,
@@ -158,7 +158,7 @@ class CDCChannel(ConvertChannel):
                 start_time = time.time_ns()
                 codecogs = (
                     client.get(
-                        r"https://latex.codecogs.com/png.image?\huge%20\dpi{600}\\int_{a}^{b}x^2\\,dx=\\frac{b^3}{3}-\\frac{a^3}{5}"
+                        r"http://latex.codecogs.com/png.image?\huge%20\dpi{600}\\int_{a}^{b}x^2\\,dx=\\frac{b^3}{3}-\\frac{a^3}{5}"
                     ),
                     time.time_ns() - start_time,
                 )
@@ -172,7 +172,7 @@ class CDCChannel(ConvertChannel):
 
 class JRTChannel(ConvertChannel):
 
-    URL = "https://latex2image.joeraut.com"
+    URL = "http://latex2image.joeraut.com"
 
     async def get_to_convert(
         self,
@@ -225,7 +225,7 @@ class JRTChannel(ConvertChannel):
                 joeraut = (
                     client.get(
                         client.post(
-                            "https://www.latex2png.com/api/convert",
+                            "http://www.latex2png.com/api/convert",
                             json={
                                 "latexInput": "\\\\int_{a}^{b} x^2 \\\\, dx = \\\\frac{b^3}{3} - \\\\frac{a^3}{5}",
                                 "outputFormat": "PNG",

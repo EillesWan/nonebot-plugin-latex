@@ -17,7 +17,7 @@ pip install nonebot-plugin-latex
 如果希望直接作为 LaTeX 渲染插件使用的话，请在 NoneBot 配置文件中添加以下内容：
 
 ```env
-enable_as_application = true
+latex_enable_as_application = true
 ```
 
 这样就可以使用 `latex` 命令进行渲染了，例如 `latex $E=mc^2$` 就会返回这个方程式的渲染图片。

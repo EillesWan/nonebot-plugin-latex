@@ -19,7 +19,7 @@ from nonebot.plugin import PluginMetadata
 from .config import Config
 from .converter import converter
 
-__version__ = "0.0.2.1"
+__version__ = "0.0.2.2"
 
 __author__ = "Eilles"
 
@@ -36,5 +36,5 @@ __plugin_meta__ = PluginMetadata(
 config = get_plugin_config(Config)
 
 
-if config.enable_as_application:
+if config.latex_enable_as_application:
     from .main import *

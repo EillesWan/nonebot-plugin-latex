@@ -2,6 +2,7 @@
 # Other Things
 test.*
 output.png
+deal_latex.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
