@@ -21,3 +21,8 @@ latex_enable_as_application = true
 ```
 
 这样就可以使用 `latex` 命令进行渲染了，例如 `latex $E=mc^2$` 就会返回这个方程式的渲染图片。
+
+## 提交
+
+各位可以搭建自己的 LaTeX 在线渲染服务，或者直接本地渲染，如果提交到本仓库，在下不胜感激。\
+对于本地渲染服务，请不要使用 nonebot-plugin-htmlrender
