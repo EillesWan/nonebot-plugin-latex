@@ -14,8 +14,8 @@ See the Mulan PSL v2 for more details.
 """
 
 import nonebot
-from nonebot.adapters.onebot.v11 import MessageEvent
 
+from nonebot.adapters.onebot.v11 import MessageEvent
 
 # from nonebot.matcher import Matcher
 
@@ -29,7 +29,7 @@ from nonebot_plugin_alconna import (
 )
 
 from .data import LATEX_PATTERN
-from .converter import converter
+from .converter import _converter
 
 command_heads = (
     "latex",
@@ -69,6 +69,7 @@ async def check_for_scan(
                     # print("判断：这不是指令")
                     return False
         return False
+    return False
 
 
 latexg = nonebot.on_message(
@@ -103,7 +104,7 @@ async def handle_pic(
 
     for tex_macher in latexes:
         tex = tex_macher.group().replace("$", "")
-        if (result := await converter.generate_png(tex))[0]:
+        if (result := await _converter.generate_png(tex))[0]:
             result_msg.append(
                 Alconna_Image(raw=result[1], mimetype="image/png", name="latex.png")  # type: ignore
             )

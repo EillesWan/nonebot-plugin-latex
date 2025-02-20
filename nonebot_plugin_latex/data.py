@@ -13,10 +13,23 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 """
 
-from typing import Optional, Literal, Tuple
-import httpx
-import time
 import re
+import time
+import asyncio
+from typing import Literal, Optional, Tuple
+
+import httpx
+from nonebot import logger
+
+
+# 正则匹配 LaTeX 公式内容
+LATEX_PATTERN = re.compile(
+    r"\\begin\{equation\}(.*?)\\end\{equation\}|(?<!\$)(\$(.*?)\$|\$\$(.*?)\$\$|\\\[(.*?)\\\]|\\\[.*?\\\]|\\\((.*?)\\\))",
+    re.DOTALL,
+)
+
+
+MAX_TIME = 0xFFFFFF
 
 
 class ConvertChannel:
@@ -33,8 +46,8 @@ class ConvertChannel:
         return False, "请勿直接调用母类"
 
     @staticmethod
-    def channel_test() -> int:
-        return -1
+    async def channel_test() -> int:
+        return MAX_TIME
 
 
 class L2PChannel(ConvertChannel):
@@ -52,6 +65,7 @@ class L2PChannel(ConvertChannel):
 
         async with httpx.AsyncClient(
             timeout=timeout,
+            verify=False,
         ) as client:
             while retry > 0:
                 try:
@@ -87,36 +101,38 @@ class L2PChannel(ConvertChannel):
         return False, "未知错误"
 
     @staticmethod
-    def channel_test() -> int:
-        with httpx.Client(timeout=5) as client:
+    async def channel_test() -> int:
+        async with httpx.AsyncClient(timeout=5, verify=False) as client:
             try:
                 start_time = time.time_ns()
                 latex2png = (
-                    client.get(
+                    await client.get(
                         "http://www.latex2png.com{}"
-                        + client.post(
-                            "http://www.latex2png.com/api/convert",
-                            json={
-                                "auth": {"user": "guest", "password": "guest"},
-                                "latex": "\\\\int_{a}^{b} x^2 \\\\, dx = \\\\frac{b^3}{3} - \\\\frac{a^3}{5}\n",
-                                "resolution": 600,
-                                "color": "000000",
-                            },
+                        + (
+                            await client.post(
+                                "http://www.latex2png.com/api/convert",
+                                json={
+                                    "auth": {"user": "guest", "password": "guest"},
+                                    "latex": "\\\\int_{a}^{b} x^2 \\\\, dx = \\\\frac{b^3}{3} - \\\\frac{a^3}{5}\n",
+                                    "resolution": 600,
+                                    "color": "000000",
+                                },
+                            )
                         ).json()["url"]
                     ),
                     time.time_ns() - start_time,
                 )
             except:
-                return 99999
+                return MAX_TIME
         if latex2png[0].status_code == 200:
             return latex2png[1]
         else:
-            return 99999
+            return MAX_TIME
 
 
 class CDCChannel(ConvertChannel):
 
-    URL = "http://latex.codecogs.com"
+    URL = "https://latex.codecogs.com"
 
     async def get_to_convert(
         self,
@@ -128,6 +144,7 @@ class CDCChannel(ConvertChannel):
     ) -> Tuple[Literal[True], bytes] | Tuple[Literal[False], bytes | str]:
         async with httpx.AsyncClient(
             timeout=timeout,
+            verify=False,
         ) as client:
 
             while retry > 0:
@@ -152,27 +169,27 @@ class CDCChannel(ConvertChannel):
         return False, "未知错误"
 
     @staticmethod
-    def channel_test() -> int:
-        with httpx.Client(timeout=5) as client:
+    async def channel_test() -> int:
+        async with httpx.AsyncClient(timeout=5, verify=False) as client:
             try:
                 start_time = time.time_ns()
                 codecogs = (
-                    client.get(
-                        r"http://latex.codecogs.com/png.image?\huge%20\dpi{600}\\int_{a}^{b}x^2\\,dx=\\frac{b^3}{3}-\\frac{a^3}{5}"
+                    await client.get(
+                        r"https://latex.codecogs.com/png.image?\huge%20\dpi{600}\\int_{a}^{b}x^2\\,dx=\\frac{b^3}{3}-\\frac{a^3}{5}"
                     ),
                     time.time_ns() - start_time,
                 )
             except:
-                return 99999
+                return MAX_TIME
         if codecogs[0].status_code == 200:
             return codecogs[1]
         else:
-            return 99999
+            return MAX_TIME
 
 
 class JRTChannel(ConvertChannel):
 
-    URL = "http://latex2image.joeraut.com"
+    URL = "https://latex2image.joeraut.com"
 
     async def get_to_convert(
         self,
@@ -185,6 +202,7 @@ class JRTChannel(ConvertChannel):
 
         async with httpx.AsyncClient(
             timeout=timeout,
+            verify=False,
         ) as client:
             while retry > 0:
                 try:
@@ -196,7 +214,6 @@ class JRTChannel(ConvertChannel):
                             "outputScale": "{}%".format(dpi / 3 * 5),
                         },
                     )
-                    print(post_response)
                     if post_response.status_code == 200:
 
                         if not (json_response := post_response.json())["error"]:
@@ -218,29 +235,31 @@ class JRTChannel(ConvertChannel):
         return False, "未知错误"
 
     @staticmethod
-    def channel_test() -> int:
-        with httpx.Client(timeout=5) as client:
+    async def channel_test() -> int:
+        async with httpx.AsyncClient(timeout=5, verify=False) as client:
             try:
                 start_time = time.time_ns()
                 joeraut = (
-                    client.get(
-                        client.post(
-                            "http://www.latex2png.com/api/convert",
-                            json={
-                                "latexInput": "\\\\int_{a}^{b} x^2 \\\\, dx = \\\\frac{b^3}{3} - \\\\frac{a^3}{5}",
-                                "outputFormat": "PNG",
-                                "outputScale": "1000%",
-                            },
+                    await client.get(
+                        (
+                            await client.post(
+                                "http://www.latex2png.com/api/convert",
+                                json={
+                                    "latexInput": "\\\\int_{a}^{b} x^2 \\\\, dx = \\\\frac{b^3}{3} - \\\\frac{a^3}{5}",
+                                    "outputFormat": "PNG",
+                                    "outputScale": "1000%",
+                                },
+                            )
                         ).json()["imageUrl"]
                     ),
                     time.time_ns() - start_time,
                 )
             except:
-                return 99999
+                return MAX_TIME
         if joeraut[0].status_code == 200:
             return joeraut[1]
         else:
-            return 99999
+            return MAX_TIME
 
 
 CHANNEL_LIST: list[type[ConvertChannel]] = [L2PChannel, CDCChannel, JRTChannel]
@@ -248,20 +267,17 @@ CHANNEL_LIST: list[type[ConvertChannel]] = [L2PChannel, CDCChannel, JRTChannel]
 
 class ConvertLatex:
 
-    channel: ConvertChannel
+    channel: Optional[ConvertChannel]
 
-    def __init__(self, channel: Optional[ConvertChannel] = None) -> None:
-        """
-        LaTeX在线渲染类
+    def __init__(self, channel: Optional[ConvertChannel] = None):
+        self.channel = channel
+        logger.info("LaTeX 转换服务将在 Bot 连接时异步加载")
 
-        Args:
-            channel (Optional[ConvertChannel], optional):
-                选择何种在线转换通道，若为空，则自动选择延迟最低的通道。默认为空。
-                [WARNING] 请注意！选择通道时采取的是同步函数，因此可能造成阻塞。
-        """
-
+    async def load_channel(self, channel: ConvertChannel | None = None) -> None:
         if channel is None:
-            self.channel = self.auto_choose_channel()
+            logger.info("正在选择 LaTeX 转换服务频道，请稍等...")
+            self.channel = await self.auto_choose_channel()
+            logger.info(f"已选择 {self.channel.__class__.__name__} 服务频道")
         else:
             self.channel = channel
 
@@ -276,8 +292,7 @@ class ConvertLatex:
         """
         LaTeX 在线渲染
 
-        参数
-        ====
+        参数:
 
             latex: str
                 LaTeX 代码
@@ -289,26 +304,37 @@ class ConvertLatex:
                 超时时间
             retry_: int
                 重试次数
-        返回
-        ====
+        返回:
             bytes
             图片
         """
-        return await self.channel.get_to_convert(
+        if self.channel is None:
+            await self.load_channel()
+
+        return await self.channel.get_to_convert(  # type: ignore
             latex, dpi, foreground_colour, timeout_, retry_
         )
 
     @staticmethod
-    def auto_choose_channel() -> ConvertChannel:
+    async def auto_choose_channel() -> ConvertChannel:
+        """
+        依据访问延迟，自动选择 LaTeX 转换服务频道
+
+        返回
+        ====
+            ConvertChannel
+                LaTeX 转换服务实例
+        """
+
+        async def channel_test_wrapper(
+            channel: type[ConvertChannel],
+        ) -> Tuple[int, type[ConvertChannel]]:
+            score = await channel.channel_test()
+            return score, channel
 
         return min(
-            CHANNEL_LIST,
-            key=lambda channel: channel.channel_test(),
-        )()
-
-
-# 正则匹配 LaTeX 公式内容
-LATEX_PATTERN = re.compile(
-    r"\\begin\{equation\}(.*?)\\end\{equation\}|(?<!\$)(\$(.*?)\$|\$\$(.*?)\$\$|\\\[(.*?)\\\]|\\\[.*?\\\]|\\\((.*?)\\\))",
-    re.DOTALL,
-)
+            await asyncio.gather(
+                *(channel_test_wrapper(channel) for channel in CHANNEL_LIST)
+            ),
+            key=lambda x: x[0],
+        )[1]()
