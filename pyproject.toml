@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-latex"
-version = "0.0.2.3"
+version = "0.0.3"
 description = "通过互联网公共服务渲染LaTeX公式"
 authors = [{ name = "Eilles", email = "EillesWan@outlook.com" }]
 dependencies = [
