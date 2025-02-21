@@ -15,17 +15,17 @@ See the Mulan PSL v2 for more details.
 
 import nonebot
 
-from nonebot.adapters.onebot.v11 import MessageEvent
+from nonebot_plugin_alconna.uniseg import Text
 
-# from nonebot.matcher import Matcher
 
 nonebot.require("nonebot_plugin_alconna")
 
-# from nonebot_plugin_alconna.util import annotation
 from nonebot_plugin_alconna import (
     Image as Alconna_Image,
+    Reply,
     Text as Alconnna_Text,
     UniMessage,
+    UniMsg
 )
 
 from .data import LATEX_PATTERN
@@ -47,29 +47,16 @@ command_heads = (
 
 
 async def check_for_scan(
-    event: MessageEvent,
+    msg: UniMsg,
     # state: T_State,
 ) -> bool:
     """
     检查是否为 LaTeX 指令
     """
-
-    # print("检查消息满足渲染要求：", event)
-    if isinstance(event, MessageEvent):
-        # print("此为原始信息：", event.raw_message)
-        # event.message
-        for msg in event.message:
-            # print("这是其中一个信息---", msg)
-            if msg.type == "text" and (msgdata := msg.data["text"].strip()):
-                if msgdata.startswith(command_heads):
-
-                    # print("判断：这确实是指令发出")
-                    return True
-                else:
-                    # print("判断：这不是指令")
-                    return False
-        return False
-    return False
+    return any(
+        isinstance(seg, Text) and seg.text.strip().startswith(command_heads)
+        for seg in msg
+    )
 
 
 latexg = nonebot.on_message(
@@ -81,18 +68,19 @@ latexg = nonebot.on_message(
 
 @latexg.handle()
 async def handle_pic(
-    event: MessageEvent,
+    msgs: UniMsg,
     # state: T_State,
     # arg: Optional[Message] = CommandArg(),
 ):
     # print("正在解决reply指令……")
     latexes = []
-    if event.reply:
-        latexes.extend(LATEX_PATTERN.finditer(event.reply.message.extract_plain_text()))
+    if msgs.has(Reply):
+        i = msgs[Reply, 0]
+        if i.msg:
+            latexes.extend(LATEX_PATTERN.finditer(i.msg if isinstance(i.msg, str) else i.msg.extract_plain_text()))
 
     # print(arg)
-    if event.message:
-        latexes.extend(LATEX_PATTERN.finditer(event.message.extract_plain_text()))
+    latexes.extend(LATEX_PATTERN.finditer(msgs.extract_plain_text()))
 
     if not latexes:
         await latexg.finish(
