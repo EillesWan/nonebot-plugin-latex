@@ -14,25 +14,23 @@ See the Mulan PSL v2 for more details.
 """
 
 from nonebot import get_plugin_config, get_driver
-from nonebot.plugin import PluginMetadata
+from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 
 from .config import Config
 from .converter import _converter, get_converter
 
-__version__ = "0.0.3"
+__version__ = "0.0.3.1"
 
 __author__ = "Eilles"
 
 __plugin_meta__ = PluginMetadata(
-    name="LaTeX图形渲染插件",
-    description="从互联网服务渲染LaTeX公式并发送",
+    name="LaTeX 在线渲染插件",
+    description="从互联网服务渲染 LaTeX 公式",
     usage="发送 latex 或 公式，后接内容或回复公式信息。",
     type="library",
     homepage="https://github.com/EillesWan/nonebot-plugin-latex",
     config=Config,
-    supported_adapters={
-        "~onebot.v11",
-    },
+    supported_adapters=inherit_supported_adapters("nonebot_plugin_alconna"),
     extra={"License": "Mulan PSL v2", "Author": __author__},
 )
 

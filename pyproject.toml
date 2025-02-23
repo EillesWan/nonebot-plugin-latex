@@ -1,12 +1,12 @@
 [project]
 name = "nonebot-plugin-latex"
-version = "0.0.3"
+version = "0.0.3.1"
 description = "通过互联网公共服务渲染LaTeX公式"
 authors = [{ name = "Eilles", email = "EillesWan@outlook.com" }]
 dependencies = [
-    "nonebot2",
+    "nonebot2>=2.2.0,<1000.0.0",
     "httpx>=0.27.0,<0.28.0",
-    "nonebot-plugin-alconna",
+    "nonebot-plugin-alconna>=0.48.0,<1000.0.0",
 ]
 requires-python = ">=3.9,<4.0"
 readme = "README.md"
