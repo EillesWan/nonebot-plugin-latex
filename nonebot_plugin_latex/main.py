@@ -25,7 +25,7 @@ from nonebot_plugin_alconna import (
     Reply,
     Text as Alconnna_Text,
     UniMessage,
-    UniMsg
+    UniMsg,
 )
 
 from .data import LATEX_PATTERN
@@ -77,7 +77,11 @@ async def handle_pic(
     if msgs.has(Reply):
         i = msgs[Reply, 0]
         if i.msg:
-            latexes.extend(LATEX_PATTERN.finditer(i.msg if isinstance(i.msg, str) else i.msg.extract_plain_text()))
+            latexes.extend(
+                LATEX_PATTERN.finditer(
+                    i.msg if isinstance(i.msg, str) else i.msg.extract_plain_text()
+                )
+            )
 
     # print(arg)
     latexes.extend(LATEX_PATTERN.finditer(msgs.extract_plain_text()))
