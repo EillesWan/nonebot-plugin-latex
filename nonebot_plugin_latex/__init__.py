@@ -19,7 +19,7 @@ from nonebot.plugin import PluginMetadata, inherit_supported_adapters, require
 from .config import Config
 from .converter import _converter, get_converter
 
-__version__ = "0.0.3.4"
+__version__ = "0.0.3.5"
 
 __author__ = "Eilles"
 
