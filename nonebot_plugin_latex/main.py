@@ -14,22 +14,17 @@ See the Mulan PSL v2 for more details.
 """
 
 import nonebot
-
 from nonebot_plugin_alconna.uniseg import Text
-
 
 nonebot.require("nonebot_plugin_alconna")
 
-from nonebot_plugin_alconna import (
-    Image as Alconna_Image,
-    Reply,
-    Text as Alconnna_Text,
-    UniMessage,
-    UniMsg,
-)
+from nonebot_plugin_alconna import Image as Alconna_Image
+from nonebot_plugin_alconna import Reply
+from nonebot_plugin_alconna import Text as Alconnna_Text
+from nonebot_plugin_alconna import UniMessage, UniMsg
 
-from .data import LATEX_PATTERN
 from .converter import _converter
+from .data import LATEX_PATTERN
 
 command_heads = (
     "latex",

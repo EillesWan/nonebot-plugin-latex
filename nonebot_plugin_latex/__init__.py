@@ -13,13 +13,13 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 """
 
-from nonebot import get_plugin_config, get_driver
-from nonebot.plugin import PluginMetadata
+from nonebot import get_driver, get_plugin_config
+from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 
 from .config import Config
 from .converter import _converter, get_converter
 
-__version__ = "0.0.3.2"
+__version__ = "0.0.3.3"
 
 __author__ = "Eilles"
 
@@ -30,27 +30,7 @@ __plugin_meta__ = PluginMetadata(
     type="library",
     homepage="https://github.com/EillesWan/nonebot-plugin-latex",
     config=Config,
-    supported_adapters={
-        "nonebot.adapters.telegram",
-        "nonebot.adapters.dodo",
-        "nonebot_adapter_tailchat",
-        "nonebot.adapters.onebot.v11",
-        "nonebot.adapters.minecraft",
-        "nonebot.adapters.github",
-        "nonebot.adapters.discord",
-        "nonebot.adapters.mail",
-        "nonebot.adapters.ding",
-        "nonebot.adapters.console",
-        "nonebot.adapters.qq",
-        "nonebot.adapters.kritor",
-        "nonebot.adapters.feishu",
-        "nonebot.adapters.red",
-        "nonebot.adapters.satori",
-        "nonebot.adapters.onebot.v12",
-        "nonebot.adapters.kaiheila",
-        "nonebot.adapters.mirai",
-        "nonebot.adapters.ntchat",
-    },  # inherit_supported_adapters("nonebot_plugin_alconna"),
+    supported_adapters=inherit_supported_adapters("nonebot_plugin_alconna"),
     extra={"License": "Mulan PSL v2", "Author": __author__},
 )
 

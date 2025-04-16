@@ -13,14 +13,17 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 """
 
-import re
-import time
 import asyncio
+import re
+import ssl
+import time
 from typing import Literal, Optional, Tuple
 
 import httpx
 from nonebot import logger
 
+_ssl_context = ssl.create_default_context()
+_ssl_context.set_ciphers("DEFAULT")
 
 # 正则匹配 LaTeX 公式内容
 LATEX_PATTERN = re.compile(
@@ -65,7 +68,7 @@ class L2PChannel(ConvertChannel):
 
         async with httpx.AsyncClient(
             timeout=timeout,
-            verify=False,
+            verify=_ssl_context,
         ) as client:
             while retry > 0:
                 try:
@@ -102,7 +105,7 @@ class L2PChannel(ConvertChannel):
 
     @staticmethod
     async def channel_test() -> int:
-        async with httpx.AsyncClient(timeout=5, verify=False) as client:
+        async with httpx.AsyncClient(timeout=5, verify=_ssl_context) as client:
             try:
                 start_time = time.time_ns()
                 latex2png = (
@@ -144,7 +147,7 @@ class CDCChannel(ConvertChannel):
     ) -> Tuple[Literal[True], bytes] | Tuple[Literal[False], bytes | str]:
         async with httpx.AsyncClient(
             timeout=timeout,
-            verify=False,
+            verify=_ssl_context,
         ) as client:
 
             while retry > 0:
@@ -170,7 +173,7 @@ class CDCChannel(ConvertChannel):
 
     @staticmethod
     async def channel_test() -> int:
-        async with httpx.AsyncClient(timeout=5, verify=False) as client:
+        async with httpx.AsyncClient(timeout=5, verify=_ssl_context) as client:
             try:
                 start_time = time.time_ns()
                 codecogs = (
@@ -202,7 +205,7 @@ class JRTChannel(ConvertChannel):
 
         async with httpx.AsyncClient(
             timeout=timeout,
-            verify=False,
+            verify=_ssl_context,
         ) as client:
             while retry > 0:
                 try:
@@ -236,7 +239,7 @@ class JRTChannel(ConvertChannel):
 
     @staticmethod
     async def channel_test() -> int:
-        async with httpx.AsyncClient(timeout=5, verify=False) as client:
+        async with httpx.AsyncClient(timeout=5, verify=_ssl_context) as client:
             try:
                 start_time = time.time_ns()
                 joeraut = (
