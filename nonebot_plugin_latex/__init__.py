@@ -14,14 +14,16 @@ See the Mulan PSL v2 for more details.
 """
 
 from nonebot import get_driver, get_plugin_config
-from nonebot.plugin import PluginMetadata, inherit_supported_adapters
+from nonebot.plugin import PluginMetadata, inherit_supported_adapters, require
 
 from .config import Config
 from .converter import _converter, get_converter
 
-__version__ = "0.0.3.3"
+__version__ = "0.0.3.4"
 
 __author__ = "Eilles"
+
+require("nonebot_plugin_alconna")
 
 __plugin_meta__ = PluginMetadata(
     name="LaTeX 在线渲染插件",
